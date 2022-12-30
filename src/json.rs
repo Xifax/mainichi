@@ -1,14 +1,7 @@
-// use serde::{Deserialize, Serialize};
+use rand::seq::SliceRandom;
 use std::fs;
 use std::io;
 use thiserror::Error;
-
-// TODO: find kanji db (yomichan?) with a lot of stats and so on
-// TODO: struct for relevant json
-// #[derive(Serialize, Deserialize, Debug)]
-// struct Kanji {
-//     kanji: String,
-// }
 
 const DB_PATH: &str = "./data/kanji.json";
 
@@ -24,4 +17,9 @@ pub fn read_db() -> Result<Vec<String>, Error> {
     let db_content = fs::read_to_string(DB_PATH)?;
     let parsed: Vec<String> = serde_json::from_str(&db_content)?;
     Ok(parsed)
+}
+
+pub fn fetch_random_kanji() -> String {
+    let kanji = read_db().unwrap();
+    kanji.choose(&mut rand::thread_rng()).unwrap().clone()
 }
