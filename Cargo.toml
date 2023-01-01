@@ -15,7 +15,11 @@ sqlx = { version = "0.6", features = [ "runtime-tokio-rustls" ] }
 thiserror = "1.0.38"
 rand = "0.8.5"
 colored = "2.0.0"
+termion = "*"
 lindera = { version = "0.19.4", features = ["all-dictionaries"] }
+wana_kana = "2.0"
+indicatif = "0.17.2"
+random_color = "0.6.1"
 
 [dev-dependencies]
 bacon = "2.2.8"
