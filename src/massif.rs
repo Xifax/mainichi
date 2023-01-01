@@ -1,6 +1,5 @@
 use serde::Deserialize;
 
-
 #[derive(Deserialize)]
 pub struct Response {
     pub results: Vec<Example>,

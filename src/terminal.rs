@@ -1,9 +1,10 @@
+use japanese::charset;
 use lindera::Token;
 use random_color::RandomColor;
 use termion::color;
 use wana_kana::to_hiragana::*;
 
-fn colorize(part: &str, transcription: &str) -> (String, String) {
+fn colorize(part: &str, transcription: &str, highlight_kana: bool) -> (String, String) {
     // Don't format punctuation
     if ["。", "、", "！", "『", "』", "…"].contains(&part) {
         let reset_color = color::Fg(color::Reset);
@@ -11,6 +12,15 @@ fn colorize(part: &str, transcription: &str) -> (String, String) {
         let colored_transcription = format!("{reset_color}{transcription}");
 
         (colored_part, colored_transcription)
+
+    // Also skip hiragana only strings
+    } else if !highlight_kana && charset::is_hiragana_string(&part) {
+        let reset_color = color::Fg(color::Reset);
+        let colored_part = format!("{reset_color}{part}");
+        let colored_transcription = format!("{reset_color}{transcription}");
+
+        (colored_part, colored_transcription)
+
     // Format everything else with matching colors
     } else {
         let random_color = RandomColor::new().to_rgb_array();
@@ -27,11 +37,13 @@ fn colorize(part: &str, transcription: &str) -> (String, String) {
     }
 }
 
+// TODO: colorize from palette???
+
 /// Let's apply it for kanji transcription maybe? Both for words and transcriptions
 /// Ideally, the random colors should match
 /// So let's create [initial sentence] and [transcription sentence] side by side
 /// e.g., new_random_color for token[0]~kanji and token[7]~reading
-pub fn print_colorized(tokens: Vec<Token>) {
+pub fn print_colorized(tokens: Vec<Token>, highlight_kana: bool) {
     let mut sentence = String::from("");
     let mut reading = String::from("");
 
@@ -52,7 +64,8 @@ pub fn print_colorized(tokens: Vec<Token>) {
             };
 
             // Colorize each part differently
-            let (colored_part, colored_transcription) = colorize(&part, &transcription);
+            let (colored_part, colored_transcription) =
+                colorize(&part, &transcription, highlight_kana);
             sentence.push_str(&colored_part);
             reading.push_str(&colored_transcription);
         }

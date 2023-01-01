@@ -1,6 +1,6 @@
 [package]
 name = "mainichi"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -16,12 +16,15 @@ thiserror = "1.0.38"
 rand = "0.8.5"
 colored = "2.0.0"
 termion = "*"
-lindera = { version = "0.19.4", features = ["all-dictionaries"] }
+lindera = { version = "0.19.4", features = ["ipadic"] }
 wana_kana = "2.0"
 indicatif = "0.17.2"
 random_color = "0.6.1"
+colourado = "0.2.0"
+japanese = "0.1.1"
 
 [dev-dependencies]
 bacon = "2.2.8"
 clippy = "0.0.302"
+irust = "1.66.0"
 rustfmt = "0.10.0"
