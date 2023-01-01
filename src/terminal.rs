@@ -5,12 +5,13 @@ use wana_kana::to_hiragana::*;
 
 fn colorize(part: &str, transcription: &str) -> (String, String) {
     // Don't format punctuation
-    if ["。", "、", "！", "『", "』"].contains(&part) {
+    if ["。", "、", "！", "『", "』", "…"].contains(&part) {
         let reset_color = color::Fg(color::Reset);
-        let colored_part = format!("{}{}", reset_color, part);
-        let colored_transcription = format!("{}{}", reset_color, transcription);
+        let colored_part = format!("{reset_color}{part}");
+        let colored_transcription = format!("{reset_color}{transcription}");
 
         (colored_part, colored_transcription)
+    // Format everything else with matching colors
     } else {
         let random_color = RandomColor::new().to_rgb_array();
         let console_color = color::Fg(color::Rgb(
@@ -19,8 +20,8 @@ fn colorize(part: &str, transcription: &str) -> (String, String) {
             random_color[2],
         ));
 
-        let colored_part = format!("{}{}", console_color, part);
-        let colored_transcription = format!("{}{}", console_color, transcription);
+        let colored_part = format!("{console_color}{part}");
+        let colored_transcription = format!("{console_color}{transcription}");
 
         (colored_part, colored_transcription)
     }
@@ -44,7 +45,7 @@ pub fn print_colorized(tokens: Vec<Token>) {
             let part = token.text;
 
             // Convert to hiragana only if not katakana
-            let transcription = if &part != &details[7] {
+            let transcription = if part != details[7] {
                 to_hiragana(&details[7].clone())
             } else {
                 details[7].clone()
