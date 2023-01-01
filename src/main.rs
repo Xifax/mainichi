@@ -50,30 +50,8 @@ fn main() {
             // TODO: move '4' to arguments
             for example in response.results.iter().take(4) {
 
-                // // TODO: move to tokenizer.rs
-                // // TODO: move to dictionary.rs or something
-                // let dictionary = DictionaryConfig {
-                //     kind: Some(lindera::DictionaryKind::IPADIC),
-                //     path: None,
-                // };
-
-                // let config = TokenizerConfig {
-                //     dictionary,
-                //     user_dictionary: None,
-                //     mode: Mode::Normal,
-                //     with_details: true,
-                // };
-
-                // // create tokenizer
-                // let tokenizer = Tokenizer::new(config).unwrap();
-
-                // // tokenize the text
-                // let tokens = tokenizer.tokenize(&example.text).unwrap();
-
-                let tokens = tokeniser::tokenize(&example.text);
-                // for token in tokens {
-                //     println!("{:#?}", token.details);
-                // }
+                let mut tokenizer = tokeniser::LinderaTokenizer::new();
+                let tokens = tokenizer.tokenize(&example.text);
 
                 // output the tokens
                 terminal::print_colorized(tokens);

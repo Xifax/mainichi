@@ -11,10 +11,10 @@ pub struct LinderaTokenizer {
 }
 
 /// Default implementation for tokenizer
-impl LinderaTokenizer {
+impl <'a> LinderaTokenizer  {
     // Constructs a new instance of [`LinderaTokenizer`].
     // Note this is an associated function - no self.
-    fn new() -> Self {
+    pub fn new() -> Self {
         let dictionary = DictionaryConfig {
             kind: Some(lindera::DictionaryKind::IPADIC),
             path: None,
@@ -31,13 +31,14 @@ impl LinderaTokenizer {
         Self { tokenizer }
     }
 
-    // pub fn tokenizer(&self) -> Tokenizer {
-    //     self.tokenizer
-    // }
+    pub fn tokenize(&'a mut self, text: &'a str) -> Vec<Token> {
+        // let lindera = LinderaTokenizer::new();
+        self.tokenizer.tokenize(text).unwrap()
+    }
 
 }
 
-pub fn tokenize(text: &str) -> Vec<Token> {
-    let lindera = LinderaTokenizer::new();
-    lindera.tokenizer.tokenize(text).unwrap()
-}
+// pub fn tokenize(text: &str) -> Vec<Token> {
+//     let lindera = LinderaTokenizer::new();
+//     lindera.tokenizer.tokenize(text).unwrap()
+// }
