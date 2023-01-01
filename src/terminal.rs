@@ -41,6 +41,7 @@ pub fn print_colorized(tokens: Vec<Token>) {
             };
 
             // colorize each part differently
+            // FIX: the very first word is somehow always white?..
             let (colored_part, colored_transcription) = colorize(&part, &transcription);
             sentence.push_str(&colored_part);
             reading.push_str(&colored_transcription);

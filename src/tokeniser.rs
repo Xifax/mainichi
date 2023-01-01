@@ -32,13 +32,8 @@ impl <'a> LinderaTokenizer  {
     }
 
     pub fn tokenize(&'a mut self, text: &'a str) -> Vec<Token> {
-        // let lindera = LinderaTokenizer::new();
         self.tokenizer.tokenize(text).unwrap()
     }
 
 }
 
-// pub fn tokenize(text: &str) -> Vec<Token> {
-//     let lindera = LinderaTokenizer::new();
-//     lindera.tokenizer.tokenize(text).unwrap()
-// }
