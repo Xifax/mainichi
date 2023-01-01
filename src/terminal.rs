@@ -1,11 +1,15 @@
+use lindera::Token;
 use random_color::RandomColor;
 use termion::color;
-use lindera::Token;
 use wana_kana::to_hiragana::*;
 
-fn colorize(part: &str, transcription: &str) -> (String, String){
+fn colorize(part: &str, transcription: &str) -> (String, String) {
     let random_color = RandomColor::new().to_rgb_array();
-    let console_color = color::Fg(color::Rgb(random_color[0], random_color[1], random_color[2]));
+    let console_color = color::Fg(color::Rgb(
+        random_color[0],
+        random_color[1],
+        random_color[2],
+    ));
 
     let colored_part = format!("{}{}", part, console_color);
     let colored_transcription = format!("{}{}", transcription, console_color);
@@ -13,17 +17,15 @@ fn colorize(part: &str, transcription: &str) -> (String, String){
     (colored_part, colored_transcription)
 }
 
-/// Let's apply it for kanji transcription maybe? Both for words and transcriptions 
+/// Let's apply it for kanji transcription maybe? Both for words and transcriptions
 /// Ideally, the random colors should match
 /// So let's create [initial sentence] and [transcription sentence] side by side
 /// e.g., new_random_color for token[0]~kanji and token[7]~reading
 pub fn print_colorized(tokens: Vec<Token>) {
-
     let mut sentence = String::from("");
     let mut reading = String::from("");
 
     for token in tokens {
-
         let details = &token.details.unwrap();
         // println!("{:#?}", details);
         if details.len() > 7 {

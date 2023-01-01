@@ -29,9 +29,8 @@ fn main() {
 
     match args.action {
         // Quick test functionality goes here
-        Action::Test => {
-        }
-        // Get new kanji or show already rolled 
+        Action::Test => {}
+        // Get new kanji or show already rolled
         Action::Roll => {
             let kanji = json::read_db().unwrap();
             println!("{:?}", kanji.choose(&mut rand::thread_rng()));
@@ -43,13 +42,12 @@ fn main() {
             let kanji = json::fetch_random_kanji();
             println!("{}\n", &kanji.red());
 
-            // Fetch from Massif's API 
+            // Fetch from Massif's API
             // TODO: indeterminate progressbar
             let response = massif::fetch_examples(&kanji).unwrap();
 
             // TODO: move '4' to arguments
             for example in response.results.iter().take(4) {
-
                 let mut tokenizer = tokeniser::LinderaTokenizer::new();
                 let tokens = tokenizer.tokenize(&example.text);
 

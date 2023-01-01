@@ -1,17 +1,16 @@
 use lindera::tokenizer::Tokenizer;
+use lindera::Token;
 use lindera::{
     mode::Mode,
     tokenizer::{DictionaryConfig, TokenizerConfig},
 };
-use lindera::Token;
-
 
 pub struct LinderaTokenizer {
-    tokenizer: Tokenizer
+    tokenizer: Tokenizer,
 }
 
 /// Default implementation for tokenizer
-impl <'a> LinderaTokenizer  {
+impl<'a> LinderaTokenizer {
     // Constructs a new instance of [`LinderaTokenizer`].
     // Note this is an associated function - no self.
     pub fn new() -> Self {
@@ -34,6 +33,4 @@ impl <'a> LinderaTokenizer  {
     pub fn tokenize(&'a mut self, text: &'a str) -> Vec<Token> {
         self.tokenizer.tokenize(text).unwrap()
     }
-
 }
-
