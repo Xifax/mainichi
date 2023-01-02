@@ -1,9 +1,28 @@
 use rand::seq::SliceRandom;
+use serde::Deserialize;
+use thiserror::Error;
+use std::collections::HashMap;
 use std::fs;
 use std::io;
-use thiserror::Error;
 
-const DB_PATH: &str = "./data/kanji.json";
+#[derive(Deserialize, Clone, Debug)]
+pub struct Kanji {
+    pub kanji: String,
+    pub reading: String,
+    pub gloss: String,
+    pub frequency: usize,
+}
+
+#[derive(Deserialize, Clone, Debug)]
+pub struct Word {
+    pub word: String,
+    pub reading: String,
+    pub gloss: String,
+    pub frequency: usize,
+}
+
+const KANJI_PATH: &str = "./data/kanji_ranked.json";
+const WORDS_PATH: &str = "./data/related_words_by_kanji.json";
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -12,6 +31,36 @@ pub enum Error {
     #[error("error parsing the DB file: {0}")]
     ParseDBError(#[from] serde_json::Error),
 }
+
+/// Load graded [kanji] DB
+pub fn read_kanji_db() -> Result<Vec<Kanji>, Error> {
+    let db_content = fs::read_to_string(KANJI_PATH)?;
+    let parsed: Vec<Kanji> = serde_json::from_str(&db_content)?;
+    Ok(parsed)
+}
+
+/// Load {kanji: [words]} DB
+pub fn read_words_db() -> Result<HashMap<String, Vec<Word>>, Error> {
+    let db_content = fs::read_to_string(WORDS_PATH)?;
+    let parsed: HashMap<String, Vec<Word>> = serde_json::from_str(&db_content)?;
+    Ok(parsed)
+}
+
+/// Get random graded kanji with frequency options
+pub fn fetch_random_kanji_ranked() -> Kanji {
+    let kanji = read_kanji_db().unwrap();
+    kanji.choose(&mut rand::thread_rng()).unwrap().clone()
+}
+
+/// Get example words for specified kanji (if any)
+pub fn fetch_related_words(kanji: &str) -> Vec<Word> {
+    let words = read_words_db().unwrap();
+    words.get(kanji).unwrap().clone()
+}
+
+/* Old methods */
+
+const DB_PATH: &str = "./data/kanji.json";
 
 pub fn read_db() -> Result<Vec<String>, Error> {
     let db_content = fs::read_to_string(DB_PATH)?;
@@ -23,3 +72,5 @@ pub fn fetch_random_kanji() -> String {
     let kanji = read_db().unwrap();
     kanji.choose(&mut rand::thread_rng()).unwrap().clone()
 }
+
+/* Old methods END */

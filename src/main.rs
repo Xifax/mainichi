@@ -1,5 +1,4 @@
 use clap::{Parser, Subcommand};
-use rand::seq::SliceRandom;
 
 use colored::Colorize;
 use colourado::{ColorPalette, PaletteType};
@@ -19,7 +18,18 @@ struct Args {
 #[derive(Subcommand)]
 enum Action {
     /// Display kanji for today
-    Roll,
+    Roll {
+        // TODO: !!!
+        // // WIP: possible options
+        // max_rarity: usize,
+        // // Don't roll new kanji that is much rarer that previous one (sic!)
+        // sort_by_rarity: bool,
+    },
+    Words {
+        // TODO:
+        // related words
+
+    },
     /// Display example for today's kanji
     Examples {
         #[clap(short, long, default_value_t = 6)]
@@ -53,10 +63,19 @@ fn main() {
             }
         }
         // Get new kanji or show already rolled
-        Action::Roll => {
-            let kanji = json::read_db().unwrap();
-            println!("{:?}", kanji.choose(&mut rand::thread_rng()));
+        Action::Roll {} => {
+            // let kanji = json::read_db().unwrap();
+            // println!("{:?}", kanji.choose(&mut rand::thread_rng()));
             // TODO: save kanji as TODAY's kanji
+            let kanji = json::fetch_random_kanji_ranked();
+            println!("{:#?}", kanji);
+            // println!("{:#?}", kanji.info().kanji);
+
+        }
+        Action::Words {} => {
+            let kanji = json::fetch_random_kanji_ranked();
+            let words = json::fetch_related_words(&kanji.kanji);
+            println!("{:#?}", words);
         }
         // fetch examples for today's kanji
         Action::Examples {
