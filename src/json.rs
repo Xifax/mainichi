@@ -48,8 +48,14 @@ pub fn read_words_db() -> Result<HashMap<String, Vec<Word>>, Error> {
 
 /// Get random graded kanji with frequency options
 pub fn fetch_random_kanji_ranked() -> Kanji {
-    let kanji = read_kanji_db().unwrap();
-    kanji.choose(&mut rand::thread_rng()).unwrap().clone()
+    let kanji_list = read_kanji_db().unwrap();
+    kanji_list.choose(&mut rand::thread_rng()).unwrap().clone()
+}
+
+/// Get kanji by key
+pub fn fetch_kanji(kanji: &str) -> Kanji {
+    let kanji_list = read_kanji_db().unwrap();
+    kanji_list.iter().find(|k| &k.kanji == kanji).unwrap().clone()
 }
 
 /// Get example words for specified kanji (if any)

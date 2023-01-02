@@ -25,6 +25,10 @@ enum Action {
         // max_rarity: usize,
         // // Don't roll new kanji that is much rarer that previous one (sic!)
         // sort_by_rarity: bool,
+
+        /// Force to fetch new kanji even if there's already one for today
+        #[clap(short, long, default_value_t = false)]
+        force: bool,
     },
     Gloss {
         // Definition and so on
@@ -45,6 +49,9 @@ enum Action {
     },
     /// Test functionality (move to tests?)
     Test,
+    // TODO: examples for words!!!
+    // TODO: history!!!
+    // TODO: show gloss|exampes for specific kanji|words
 }
 
 fn main() {
@@ -62,15 +69,30 @@ fn main() {
             dbg!(state::should_roll_new_kanji());
         }
         // TODO: display glossary definitions
-        Action::Gloss {} => {}
+        Action::Gloss {} => {
+            let kanji = state::fetch_todays_kanji();
+            let kanji: json::Kanji = json::fetch_kanji(&kanji);
+            // TODO: print prettily
+            // TODO: colorize?
+            // println!("{}", kanji.kanji);
+            println!("{}", kanji.gloss);
+        }
         // Get new kanji or show already rolled
-        Action::Roll {} => {
+        Action::Roll { force } => {
             // let kanji = json::read_db().unwrap();
             // println!("{:?}", kanji.choose(&mut rand::thread_rng()));
             // TODO: save kanji as TODAY's kanji
-            let kanji = json::fetch_random_kanji_ranked();
-            println!("{:#?}", kanji);
-            // println!("{:#?}", kanji.info().kanji);
+
+            let kanji: json::Kanji;
+            if force || state::should_roll_new_kanji() {
+                kanji = json::fetch_random_kanji_ranked();
+                state::set_todays_kanji(&kanji.kanji);
+            } else {
+                let kanji_symbol = state::fetch_todays_kanji();
+                kanji = json::fetch_kanji(&kanji_symbol);
+            }
+            // TODO: format prettily
+            println!("{:#?}", kanji.kanji);
 
         }
         Action::Words {} => {
@@ -83,8 +105,10 @@ fn main() {
             count,
             highlight_kana,
         } => {
-            // TODO: get rolled kanji or roll new one
-            let kanji = json::fetch_random_kanji();
+            // TODO: check if should roll a new one?
+            // let kanji = json::fetch_random_kanji();
+            let kanji = state::fetch_todays_kanji();
+            // kanji = json::fetch_kanji(&kanji_symbol);
             println!("{}\n", &kanji.red());
 
             // Fetch from Massif's API

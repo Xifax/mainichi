@@ -43,11 +43,11 @@ fn load_config() -> Result<Config, Error> {
     Ok(parsed)
 }
 
-pub fn get_kanji() -> String {
+pub fn fetch_todays_kanji() -> String {
     load_config().unwrap().kanji
 }
 
-pub fn set_kanji(kanji: &str) {
+pub fn set_todays_kanji(kanji: &str) {
     let mut cfg = load_config().unwrap();
     cfg.kanji = kanji.into();
     cfg.history.push(kanji.into());
