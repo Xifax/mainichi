@@ -3,8 +3,8 @@ use clap::{Parser, Subcommand};
 use colored::Colorize;
 
 mod json;
-mod state;
 mod massif;
+mod state;
 mod terminal;
 mod tokeniser;
 
@@ -25,7 +25,6 @@ enum Action {
         // max_rarity: usize,
         // // Don't roll new kanji that is much rarer that previous one (sic!)
         // sort_by_rarity: bool,
-
         /// Force to fetch new kanji even if there's already one for today
         #[clap(short, long, default_value_t = false)]
         force: bool,
@@ -36,7 +35,6 @@ enum Action {
     Words {
         // TODO:
         // related words
-
     },
     /// Display example for today's kanji
     Examples {
@@ -93,12 +91,11 @@ fn main() {
             }
             // TODO: format prettily
             println!("{:#?}", kanji.kanji);
-
         }
         Action::Words {} => {
             let kanji = json::fetch_random_kanji_ranked();
             let words = json::fetch_related_words(&kanji.kanji);
-            println!("{:#?}", words);
+            println!("{words:#?}");
         }
         // fetch examples for today's kanji
         Action::Examples {

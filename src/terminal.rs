@@ -5,16 +5,10 @@ use termion::color;
 use wana_kana::to_hiragana::*;
 
 fn colorize(part: &str, transcription: &str, highlight_kana: bool) -> (String, String) {
-    // Don't format punctuation
-    if ["。", "、", "！", "『", "』", "…"].contains(&part) {
-        let reset_color = color::Fg(color::Reset);
-        let colored_part = format!("{reset_color}{part}");
-        let colored_transcription = format!("{reset_color}{transcription}");
-
-        (colored_part, colored_transcription)
-
-    // Also skip hiragana only strings
-    } else if !highlight_kana && charset::is_hiragana_string(&part) {
+    // Don't format hiragana if required, and always don't format punctuation
+    if !highlight_kana && charset::is_hiragana_string(part)
+        || ["。", "、", "！", "『", "』", "…"].contains(&part)
+    {
         let reset_color = color::Fg(color::Reset);
         let colored_part = format!("{reset_color}{part}");
         let colored_transcription = format!("{reset_color}{transcription}");

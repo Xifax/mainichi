@@ -1,14 +1,13 @@
 // use std::collections::HashMap;
 
-use serde::{Serialize, Deserialize};
-use std::io::Error;
+use serde::{Deserialize, Serialize};
 use std::fs;
+use std::io::Error;
 use std::path::Path;
 
 use chrono::naive::NaiveDateTime;
 use chrono::prelude::Utc;
 // use std::io;
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
@@ -31,13 +30,12 @@ impl Default for Config {
 // FIX: relative paths!
 const CONFIG_PATH: &str = "./data/config.json";
 
-
 fn load_config() -> Result<Config, Error> {
     // Create default config if it does not exist
     if !Path::new(CONFIG_PATH).exists() {
         store(Config::default());
     }
-    
+
     let content = fs::read_to_string(CONFIG_PATH)?;
     let parsed: Config = serde_json::from_str(&content)?;
     Ok(parsed)
@@ -68,4 +66,3 @@ fn store(config: Config) {
     // TODO: fix Result
     fs::write(CONFIG_PATH, json_data);
 }
-

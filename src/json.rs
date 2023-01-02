@@ -1,9 +1,9 @@
 use rand::seq::SliceRandom;
 use serde::Deserialize;
-use thiserror::Error;
 use std::collections::HashMap;
 use std::fs;
 use std::io;
+use thiserror::Error;
 
 #[derive(Deserialize, Clone, Debug)]
 pub struct Kanji {
@@ -55,7 +55,11 @@ pub fn fetch_random_kanji_ranked() -> Kanji {
 /// Get kanji by key
 pub fn fetch_kanji(kanji: &str) -> Kanji {
     let kanji_list = read_kanji_db().unwrap();
-    kanji_list.iter().find(|k| &k.kanji == kanji).unwrap().clone()
+    kanji_list
+        .iter()
+        .find(|k| k.kanji == kanji)
+        .unwrap()
+        .clone()
 }
 
 /// Get example words for specified kanji (if any)
@@ -66,6 +70,7 @@ pub fn fetch_related_words(kanji: &str) -> Vec<Word> {
 
 /* Old methods */
 
+/*
 const DB_PATH: &str = "./data/kanji.json";
 
 pub fn read_db() -> Result<Vec<String>, Error> {
@@ -78,5 +83,6 @@ pub fn fetch_random_kanji() -> String {
     let kanji = read_db().unwrap();
     kanji.choose(&mut rand::thread_rng()).unwrap().clone()
 }
+*/
 
 /* Old methods END */
