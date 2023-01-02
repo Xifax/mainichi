@@ -4,6 +4,7 @@ use random_color::RandomColor;
 use termion::color;
 use wana_kana::to_hiragana::*;
 
+/// Colorize part of sentence and its transcription with the same random color
 fn colorize(part: &str, transcription: &str, highlight_kana: bool) -> (String, String) {
     // Don't format hiragana if required, and always don't format punctuation
     if !highlight_kana && charset::is_hiragana_string(part)

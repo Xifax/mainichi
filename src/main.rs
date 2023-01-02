@@ -84,7 +84,7 @@ fn main() {
             let kanji: json::Kanji;
             if force || state::should_roll_new_kanji() {
                 kanji = json::fetch_random_kanji_ranked();
-                state::set_todays_kanji(&kanji.kanji);
+                state::set_todays_kanji(&kanji.kanji).unwrap();
             } else {
                 let kanji_symbol = state::fetch_todays_kanji();
                 kanji = json::fetch_kanji(&kanji_symbol);

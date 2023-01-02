@@ -2,18 +2,19 @@
 
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::io::Error;
+use std::io;
 use std::path::Path;
 
 use chrono::naive::NaiveDateTime;
 use chrono::prelude::Utc;
-// use std::io;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
+    // Today's kanji
     kanji: String,
+    // Previously rolled kanji
     history: Vec<String>,
-    // TODO: last modified datestamp, should be compared to today
+    // Last modified datestamp, should be compared to today
     updated: NaiveDateTime,
 }
 
@@ -30,10 +31,11 @@ impl Default for Config {
 // FIX: relative paths!
 const CONFIG_PATH: &str = "./data/config.json";
 
-fn load_config() -> Result<Config, Error> {
+/// Load config from JSON file, initializing it if required
+fn load_config() -> Result<Config, io::Error> {
     // Create default config if it does not exist
     if !Path::new(CONFIG_PATH).exists() {
-        store(Config::default());
+        store(Config::default())?;
     }
 
     let content = fs::read_to_string(CONFIG_PATH)?;
@@ -41,16 +43,18 @@ fn load_config() -> Result<Config, Error> {
     Ok(parsed)
 }
 
+/// Get previously rolled kanji from config
 pub fn fetch_todays_kanji() -> String {
     load_config().unwrap().kanji
 }
 
-pub fn set_todays_kanji(kanji: &str) {
+/// Set kanji symbol as the kanji for today
+pub fn set_todays_kanji(kanji: &str) -> io::Result<()> {
     let mut cfg = load_config().unwrap();
     cfg.kanji = kanji.into();
     cfg.history.push(kanji.into());
     cfg.updated = Utc::now().naive_utc();
-    store(cfg);
+    store(cfg)
 }
 
 /// Check if last `updated` date is not today
@@ -61,8 +65,8 @@ pub fn should_roll_new_kanji() -> bool {
     diff.num_days() >= 1
 }
 
-fn store(config: Config) {
+/// Save config instance to file
+fn store(config: Config) -> io::Result<()> {
     let json_data = serde_json::to_string(&config).unwrap();
-    // TODO: fix Result
-    fs::write(CONFIG_PATH, json_data);
+    fs::write(CONFIG_PATH, json_data)
 }

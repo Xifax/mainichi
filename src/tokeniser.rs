@@ -5,11 +5,12 @@ use lindera::{
     tokenizer::{DictionaryConfig, TokenizerConfig},
 };
 
+/// Contains Lindera instance with IPADIC dictionary
 pub struct LinderaTokenizer {
     tokenizer: Tokenizer,
 }
 
-/// Default implementation for tokenizer
+/// Default implementation for Japanese tokenizer
 impl<'a> LinderaTokenizer {
     // Constructs a new instance of [`LinderaTokenizer`].
     // Note this is an associated function - no self.
@@ -30,6 +31,7 @@ impl<'a> LinderaTokenizer {
         Self { tokenizer }
     }
 
+    /// Split sentence into multiple morphological parts, i.e. words, grammar and punctuation
     pub fn tokenize(&'a mut self, text: &'a str) -> Vec<Token> {
         self.tokenizer.tokenize(text).unwrap()
     }

@@ -1,6 +1,7 @@
 use colourado::{ColorPalette, PaletteType};
 use termion::color;
 
+/// Run things and test ideas
 #[allow(unused)]
 pub fn test_functionality() {
     // number, type, closeness

@@ -5,6 +5,7 @@ use std::fs;
 use std::io;
 use thiserror::Error;
 
+/// Kanji as represented in JSON resource
 #[derive(Deserialize, Clone, Debug)]
 pub struct Kanji {
     pub kanji: String,
@@ -13,6 +14,7 @@ pub struct Kanji {
     pub frequency: usize,
 }
 
+/// Word formed with multiple kanji as represented in JSON resource
 #[derive(Deserialize, Clone, Debug)]
 pub struct Word {
     pub word: String,
@@ -21,6 +23,8 @@ pub struct Word {
     pub frequency: usize,
 }
 
+// FIX: relative paths?
+/// Path to resources
 const KANJI_PATH: &str = "./data/kanji_ranked.json";
 const WORDS_PATH: &str = "./data/related_words_by_kanji.json";
 
