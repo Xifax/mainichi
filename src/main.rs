@@ -1,13 +1,14 @@
 use clap::{Parser, Subcommand};
 
 use colored::Colorize;
-use colourado::{ColorPalette, PaletteType};
-use termion::color;
 
 mod json;
+mod state;
 mod massif;
 mod terminal;
 mod tokeniser;
+
+mod pending;
 
 #[derive(Parser)]
 struct Args {
@@ -24,6 +25,9 @@ enum Action {
         // max_rarity: usize,
         // // Don't roll new kanji that is much rarer that previous one (sic!)
         // sort_by_rarity: bool,
+    },
+    Gloss {
+        // Definition and so on
     },
     Words {
         // TODO:
@@ -44,24 +48,21 @@ enum Action {
 }
 
 fn main() {
+    // let config = state::config();
     let args = Args::parse();
 
     match args.action {
         // Quick test functionality goes here
         Action::Test => {
-            // number, type, closeness
-            let palette = ColorPalette::new(25, PaletteType::Random, true);
-            // let palette = ColorPalette::new(25, PaletteType::Pastel, false);
-            for color in palette.colors {
-                let color_array: [f32; 3] = color.to_array();
-                let array: [u8; 3] = color_array.map(|x| (x * 100.0_f32) as u8);
-                let console_color = color::Fg(color::Rgb(array[0], array[1], array[2]));
-
-                let part = "俺はアイテムバッグ~ testo";
-                let colored_part = format!("{console_color}{part}");
-                println!("{colored_part}");
-            }
+            // pending::test_functionality();
+            // let kanji = state::get_kanji();
+            // dbg!(kanji);
+            // let kanji = json::fetch_random_kanji_ranked();
+            // state::set_kanji(&kanji.kanji);
+            dbg!(state::should_roll_new_kanji());
         }
+        // TODO: display glossary definitions
+        Action::Gloss {} => {}
         // Get new kanji or show already rolled
         Action::Roll {} => {
             // let kanji = json::read_db().unwrap();
