@@ -1,9 +1,9 @@
+use colourado::{ColorPalette, PaletteType};
 use japanese::charset;
 use lindera::Token;
 use random_color::RandomColor;
 use termion::color;
 use wana_kana::to_hiragana::*;
-use colourado::{ColorPalette, PaletteType};
 
 use crate::json;
 use crate::tokeniser;
@@ -75,12 +75,14 @@ pub fn print_colorized(tokens: Vec<Token>, highlight_kana: bool) {
     println!("\n");
 }
 
-
 /// Transform vector of tokens to palleted colors rainbow madness
 /// If `colorize_kana` is true, then the colorization will be INVERTED:
 /// kana, numbers, punctuation and such will be colored, but the kanji will be white
-pub fn colorize_vec_to_str(tokenised_words: Vec<Token>, colorize_kana: bool, colorize_all: bool) -> String {
-
+pub fn colorize_vec_to_str(
+    tokenised_words: Vec<Token>,
+    colorize_kana: bool,
+    colorize_all: bool,
+) -> String {
     // number, type, closeness
     let mut palette = ColorPalette::new(tokenised_words.len() as u32, PaletteType::Pastel, true);
     let mut resulting_string = String::from("");
@@ -92,15 +94,18 @@ pub fn colorize_vec_to_str(tokenised_words: Vec<Token>, colorize_kana: bool, col
 
         // Skip token if punctuation, numeral and such (pastel looks nice even when its everywhere!)
         // try INVERTING the formatting! format only if those
-        if !colorize_all {
-            if colorize_kana ^ (token.text.chars().all(charset::is_japanese_punctuation) 
-            || token.text.chars().all(charset::is_japanese_special_character) 
-            || token.text.chars().all(char::is_numeric) 
-            || charset::is_hiragana_string(&token.text) )
-            {
-                resulting_string.push_str(&format!("{}{}", color::Fg(color::Reset), token.text));
-                continue;
-            }
+        if !colorize_all
+            && colorize_kana
+                ^ (token.text.chars().all(charset::is_japanese_punctuation)
+                    || token
+                        .text
+                        .chars()
+                        .all(charset::is_japanese_special_character)
+                    || token.text.chars().all(char::is_numeric)
+                    || charset::is_hiragana_string(&token.text))
+        {
+            resulting_string.push_str(&format!("{}{}", color::Fg(color::Reset), token.text));
+            continue;
         }
 
         // Increase brightness of all colors!
@@ -111,16 +116,15 @@ pub fn colorize_vec_to_str(tokenised_words: Vec<Token>, colorize_kana: bool, col
 
         let colored_word = format!("{}{}", console_color, token.text);
         resulting_string.push_str(&colored_word);
-
     }
 
     resulting_string
 }
 
 /// Print word and its info (customise)
-pub fn print_word(word: &json::Word) {
+pub fn print_word(word: &json::Word, colorize_kana: bool, colorize_all: bool) {
     // Tokenise and display glossary entry
-    tokenise_colorise(&word.gloss, true, false);
+    tokenise_colorise(&word.gloss, colorize_kana, colorize_all);
 }
 
 /// Morphologically split Japanese text and colorise its parts
@@ -128,5 +132,8 @@ pub fn tokenise_colorise(text: &str, colorize_kana: bool, colorize_all: bool) {
     // Tokenise and display glossary entry
     let mut tokenizer = tokeniser::LinderaTokenizer::new();
     let tokens = tokenizer.tokenize(text);
-    println!("{}", colorize_vec_to_str(tokens, colorize_kana, colorize_all));
+    println!(
+        "{}",
+        colorize_vec_to_str(tokens, colorize_kana, colorize_all)
+    );
 }

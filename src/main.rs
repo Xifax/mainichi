@@ -41,8 +41,15 @@ enum Action {
         #[clap(long, default_value_t = false)]
         colorize_all: bool,
     },
+    // Related words
     Words {
-        // Related words
+        /// Display kana as colored, leave kanji white
+        #[clap(short, long, default_value_t = false)]
+        colorize_kana: bool,
+
+        /// Colorize everything
+        #[clap(long, default_value_t = false)]
+        colorize_all: bool,
     },
     /// Display example for today's kanji
     Examples {
@@ -95,23 +102,29 @@ fn main() {
             println!("{:#?}", kanji.kanji);
         }
         // Display glossary definitions
-        Action::Gloss { colorize_kana, colorize_all } => {
+        Action::Gloss {
+            colorize_kana,
+            colorize_all,
+        } => {
             let kanji = state::fetch_todays_kanji();
             let kanji: json::Kanji = json::fetch_kanji(&kanji);
             terminal::tokenise_colorise(&kanji.gloss, colorize_kana, colorize_all)
         }
-        Action::Words {} => {
+        Action::Words {
+            colorize_kana,
+            colorize_all,
+        } => {
             // let kanji = json::fetch_random_kanji_ranked();
             let kanji = state::fetch_todays_kanji();
             let words = json::fetch_related_words(&kanji);
 
-            if words.len() == 0 {
+            if words.is_empty() {
                 println!("No words found, sorry >.<");
                 return;
             }
 
             for word in words.iter() {
-                terminal::print_word(word);
+                terminal::print_word(word, colorize_kana, colorize_all);
             }
         }
         //////////////////////////////////////
@@ -127,13 +140,17 @@ fn main() {
             // Fetch from Massif's API
             let response = massif::fetch_examples(&kanji).unwrap();
 
-            let examples: Vec<massif::Example>;
+            // let examples: Vec<massif::Example>;
             // Fetch examples in random order (check max size)
-            if randomize {
-                examples = response.results.choose_multiple(&mut rand::thread_rng(), count).cloned().collect();
+            let examples = if randomize {
+                response
+                    .results
+                    .choose_multiple(&mut rand::thread_rng(), count)
+                    .cloned()
+                    .collect()
             } else {
-                examples = response.results;
-            }
+                response.results
+            };
 
             for example in examples.iter().take(count) {
                 let mut tokenizer = tokeniser::LinderaTokenizer::new();
@@ -146,9 +163,15 @@ fn main() {
         //////////////////////////////
         // Additional functionality //
         //////////////////////////////
-        Action::History {} => { todo!() },
-        Action::Lookup {} => { todo!() },
-        Action::Related {} => { todo!() },
+        Action::History {} => {
+            todo!()
+        }
+        Action::Lookup {} => {
+            todo!()
+        }
+        Action::Related {} => {
+            todo!()
+        }
         ////////////////////////////////////////
         // Quick test functionality goes here //
         ////////////////////////////////////////

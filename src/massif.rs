@@ -17,7 +17,10 @@ const MASSIF_URL: &str = "https://massif.la/ja/search?q={}&fmt=json";
 /// Order is not randomized but graded (according to the resource)
 pub fn fetch_examples(query: &str) -> Result<Response, Box<dyn std::error::Error>> {
     // Indeterminate progressbar
-    let mut sp = Spinner::new(Spinners::Shark, format!("Fetching {query} from Massif...\n").into());
+    let mut sp = Spinner::new(
+        Spinners::Shark,
+        format!("Fetching {query} from Massif...\n"),
+    );
 
     // Make a blocking API request
     // TODO: make it non-blocking so that we can show pretty spinner!

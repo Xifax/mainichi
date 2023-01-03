@@ -23,10 +23,9 @@ pub struct Word {
     pub frequency: usize,
 }
 
-// FIX: relative paths?
 /// Path to resources
-const KANJI_PATH: &str = "./data/kanji_ranked.json";
-const WORDS_PATH: &str = "./data/related_words_by_kanji.json";
+const KANJI_PATH: &str = "data/kanji_ranked.json";
+const WORDS_PATH: &str = "data/related_words_by_kanji.json";
 
 #[derive(Error, Debug)]
 pub enum Error {
@@ -71,22 +70,3 @@ pub fn fetch_related_words(kanji: &str) -> Vec<Word> {
     let words = read_words_db().unwrap();
     words.get(kanji).unwrap().clone()
 }
-
-/* Old methods */
-
-/*
-const DB_PATH: &str = "./data/kanji.json";
-
-pub fn read_db() -> Result<Vec<String>, Error> {
-    let db_content = fs::read_to_string(DB_PATH)?;
-    let parsed: Vec<String> = serde_json::from_str(&db_content)?;
-    Ok(parsed)
-}
-
-pub fn fetch_random_kanji() -> String {
-    let kanji = read_db().unwrap();
-    kanji.choose(&mut rand::thread_rng()).unwrap().clone()
-}
-*/
-
-/* Old methods END */
