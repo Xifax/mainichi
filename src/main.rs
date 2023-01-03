@@ -31,8 +31,15 @@ enum Action {
         #[clap(short, long, default_value_t = false)]
         force: bool,
     },
+    // Definition and so on
     Gloss {
-        // Definition and so on
+        /// Display kana as colored, leave kanji white
+        #[clap(short, long, default_value_t = false)]
+        colorize_kana: bool,
+
+        /// Colorize everything
+        #[clap(long, default_value_t = false)]
+        colorize_all: bool,
     },
     Words {
         // Related words
@@ -88,10 +95,10 @@ fn main() {
             println!("{:#?}", kanji.kanji);
         }
         // Display glossary definitions
-        Action::Gloss {} => {
+        Action::Gloss { colorize_kana, colorize_all } => {
             let kanji = state::fetch_todays_kanji();
             let kanji: json::Kanji = json::fetch_kanji(&kanji);
-            terminal::tokenise_colorise(&kanji.gloss)
+            terminal::tokenise_colorise(&kanji.gloss, colorize_kana, colorize_all)
         }
         Action::Words {} => {
             // let kanji = json::fetch_random_kanji_ranked();
