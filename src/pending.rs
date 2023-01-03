@@ -17,3 +17,14 @@ pub fn test_functionality() {
         println!("{colored_part}");
     }
 }
+
+use spinners::{Spinner, Spinners};
+use std::thread::sleep;
+use std::time::Duration;
+
+#[allow(unused)]
+pub fn test_spinnders() {
+    let mut sp = Spinner::new(Spinners::Shark, "Waiting for 3 seconds".into());
+    sleep(Duration::from_secs(3));
+    sp.stop();
+}

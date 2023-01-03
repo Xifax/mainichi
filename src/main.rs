@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
-
 use rand::seq::SliceRandom;
 
+#[allow(unused)]
 use colored::Colorize;
 
 mod json;
@@ -67,7 +67,8 @@ fn main() {
         // Quick test functionality goes here
         Action::Test => {
             // pending::test_functionality();
-            dbg!(state::should_roll_new_kanji());
+            // dbg!(state::should_roll_new_kanji());
+            pending::test_spinnders();
         }
         // TODO: display glossary definitions
         Action::Gloss {} => {
@@ -106,13 +107,13 @@ fn main() {
             highlight_kana,
             randomize,
         } => {
+            // TODO: check if should roll a new one?
             // let kanji = json::fetch_random_kanji();
             // kanji = json::fetch_kanji(&kanji_symbol);
             let kanji = state::fetch_todays_kanji();
-            println!("{}\n", &kanji.red());
+            // println!("{}\n", &kanji.red());
 
             // Fetch from Massif's API
-            // TODO: indeterminate progressbar
             let response = massif::fetch_examples(&kanji).unwrap();
 
             let examples: Vec<massif::Example>;
