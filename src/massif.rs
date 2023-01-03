@@ -20,6 +20,7 @@ pub fn fetch_examples(query: &str) -> Result<Response, Box<dyn std::error::Error
     let mut sp = Spinner::new(Spinners::Shark, format!("Fetching {query} from Massif...\n").into());
 
     // Make a blocking API request
+    // TODO: make it non-blocking so that we can show pretty spinner!
     let text = reqwest::blocking::get(MASSIF_URL.replace("{}", query))?.text()?;
     let json: Response = serde_json::from_str(&text)?;
 

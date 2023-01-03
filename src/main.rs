@@ -35,8 +35,7 @@ enum Action {
         // Definition and so on
     },
     Words {
-        // TODO:
-        // related words
+        // Related words
     },
     /// Display example for today's kanji
     Examples {
@@ -44,7 +43,7 @@ enum Action {
         #[clap(short, long, default_value_t = 5)]
         count: usize,
 
-        /// Highlight hiragana
+        /// Highlight ALL hiragana
         #[clap(long, default_value_t = false)]
         highlight_kana: bool,
 
@@ -52,11 +51,19 @@ enum Action {
         #[clap(short, long, default_value_t = false)]
         randomize: bool,
     },
-    /// Test functionality (move to tests?)
+    History {
+        // Show kanji history
+    },
+    Related {
+        // Similar kanji and words
+    },
+    Lookup {
+        // Lookup kanji|words|examples for provided query in local resources
+        // TODO: examples for words go here?
+        // TODO: show gloss|exampes for specific kanji|words
+    },
+    /// Test functionality
     Test,
-    // TODO: examples for words!!!
-    // TODO: history!!!
-    // TODO: show gloss|exampes for specific kanji|words
 }
 
 fn main() {
@@ -64,27 +71,11 @@ fn main() {
     let args = Args::parse();
 
     match args.action {
-        // Quick test functionality goes here
-        Action::Test => {
-            // pending::test_functionality();
-            // dbg!(state::should_roll_new_kanji());
-            pending::test_spinnders();
-        }
-        // TODO: display glossary definitions
-        Action::Gloss {} => {
-            let kanji = state::fetch_todays_kanji();
-            let kanji: json::Kanji = json::fetch_kanji(&kanji);
-            // TODO: print prettily
-            // TODO: colorize?
-            // println!("{}", kanji.kanji);
-            println!("{}", kanji.gloss);
-        }
-        // Get new kanji or show already rolled
+        //////////////////////////////////////////
+        // Get new kanji or show already rolled //
+        //////////////////////////////////////////
         Action::Roll { force } => {
-            // let kanji = json::read_db().unwrap();
-            // println!("{:?}", kanji.choose(&mut rand::thread_rng()));
-            // TODO: save kanji as TODAY's kanji
-
+            // Check for `forced` flags and so on
             let kanji: json::Kanji;
             if force || state::should_roll_new_kanji() {
                 kanji = json::fetch_random_kanji_ranked();
@@ -96,22 +87,35 @@ fn main() {
             // TODO: format prettily
             println!("{:#?}", kanji.kanji);
         }
-        Action::Words {} => {
-            let kanji = json::fetch_random_kanji_ranked();
-            let words = json::fetch_related_words(&kanji.kanji);
-            println!("{words:#?}");
+        // Display glossary definitions
+        Action::Gloss {} => {
+            let kanji = state::fetch_todays_kanji();
+            let kanji: json::Kanji = json::fetch_kanji(&kanji);
+            terminal::tokenise_colorise(&kanji.gloss)
         }
-        // fetch examples for today's kanji
+        Action::Words {} => {
+            // let kanji = json::fetch_random_kanji_ranked();
+            let kanji = state::fetch_todays_kanji();
+            let words = json::fetch_related_words(&kanji);
+
+            if words.len() == 0 {
+                println!("No words found, sorry >.<");
+                return;
+            }
+
+            for word in words.iter() {
+                terminal::print_word(word);
+            }
+        }
+        //////////////////////////////////////
+        // Fetch examples for today's kanji //
+        //////////////////////////////////////
         Action::Examples {
             count,
             highlight_kana,
             randomize,
         } => {
-            // TODO: check if should roll a new one?
-            // let kanji = json::fetch_random_kanji();
-            // kanji = json::fetch_kanji(&kanji_symbol);
             let kanji = state::fetch_todays_kanji();
-            // println!("{}\n", &kanji.red());
 
             // Fetch from Massif's API
             let response = massif::fetch_examples(&kanji).unwrap();
@@ -131,6 +135,20 @@ fn main() {
                 // Print the sentence + reading, prettily~
                 terminal::print_colorized(tokens, highlight_kana);
             }
+        }
+        //////////////////////////////
+        // Additional functionality //
+        //////////////////////////////
+        Action::History {} => { todo!() },
+        Action::Lookup {} => { todo!() },
+        Action::Related {} => { todo!() },
+        ////////////////////////////////////////
+        // Quick test functionality goes here //
+        ////////////////////////////////////////
+        Action::Test => {
+            // pending::test_functionality();
+            // dbg!(state::should_roll_new_kanji());
+            // pending::test_spinnders();
         }
     }
 }
