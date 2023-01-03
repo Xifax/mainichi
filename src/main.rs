@@ -1,5 +1,7 @@
 use clap::{Parser, Subcommand};
 
+use rand::seq::SliceRandom;
+
 use colored::Colorize;
 
 mod json;
@@ -38,12 +40,17 @@ enum Action {
     },
     /// Display example for today's kanji
     Examples {
-        #[clap(short, long, default_value_t = 6)]
         /// Number of examples to fetch
+        #[clap(short, long, default_value_t = 5)]
         count: usize,
-        #[clap(long, default_value_t = false)]
+
         /// Highlight hiragana
+        #[clap(long, default_value_t = false)]
         highlight_kana: bool,
+
+        /// Get random COUNT examples from all those fetched from Massif
+        #[clap(short, long, default_value_t = false)]
+        randomize: bool,
     },
     /// Test functionality (move to tests?)
     Test,
@@ -60,10 +67,6 @@ fn main() {
         // Quick test functionality goes here
         Action::Test => {
             // pending::test_functionality();
-            // let kanji = state::get_kanji();
-            // dbg!(kanji);
-            // let kanji = json::fetch_random_kanji_ranked();
-            // state::set_kanji(&kanji.kanji);
             dbg!(state::should_roll_new_kanji());
         }
         // TODO: display glossary definitions
@@ -101,23 +104,30 @@ fn main() {
         Action::Examples {
             count,
             highlight_kana,
+            randomize,
         } => {
-            // TODO: check if should roll a new one?
             // let kanji = json::fetch_random_kanji();
-            let kanji = state::fetch_todays_kanji();
             // kanji = json::fetch_kanji(&kanji_symbol);
+            let kanji = state::fetch_todays_kanji();
             println!("{}\n", &kanji.red());
 
             // Fetch from Massif's API
             // TODO: indeterminate progressbar
             let response = massif::fetch_examples(&kanji).unwrap();
 
-            // TODO: fetch examples in random order (check max size)
-            for example in response.results.iter().take(count) {
+            let examples: Vec<massif::Example>;
+            // Fetch examples in random order (check max size)
+            if randomize {
+                examples = response.results.choose_multiple(&mut rand::thread_rng(), count).cloned().collect();
+            } else {
+                examples = response.results;
+            }
+
+            for example in examples.iter().take(count) {
                 let mut tokenizer = tokeniser::LinderaTokenizer::new();
                 let tokens = tokenizer.tokenize(&example.text);
 
-                // print the sentence + reading, prettily~
+                // Print the sentence + reading, prettily~
                 terminal::print_colorized(tokens, highlight_kana);
             }
         }
