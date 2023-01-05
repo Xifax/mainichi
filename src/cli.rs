@@ -61,12 +61,10 @@ pub enum Action {
         #[clap(short, long)]
         query: Option<String>,
     },
-    History {
-        // Show kanji history
-    },
-    Related {
-        // Similar kanji and words
-    },
+    /// Show kanji history
+    History {},
+    /// Similar kanji and words
+    Related {},
     Lookup {
         // Item to lookup
         // #[clap(short, long)]

@@ -100,13 +100,18 @@ fn main() {
         //////////////////////////////
         // Additional functionality //
         //////////////////////////////
+        cli::Action::Related {  } => {
+            let kanji = state::fetch_todays_kanji();
+            let related_kanji = json::fetch_related_kanji(&kanji);
+            match related_kanji {
+                Some(group) => println!("{:#?}", group.group),
+                None => println!("Sorry, nothing found~"),
+            }
+        }
         cli::Action::History {} => {
             todo!()
         }
         cli::Action::Lookup {} => {
-            todo!()
-        }
-        cli::Action::Related {} => {
             todo!()
         }
         ////////////////////////////////////////
@@ -116,8 +121,8 @@ fn main() {
             // pending::test_functionality();
             // dbg!(state::should_roll_new_kanji());
             // pending::test_spinnders();
-            let test_path = path::get_relative_path(path::KANJI_PATH);
-            dbg!(test_path);
+            // let test_path = path::get_relative_path(path::KANJI_PATH);
+            // dbg!(test_path);
         }
     }
 }
