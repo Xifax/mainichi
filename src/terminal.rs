@@ -81,7 +81,7 @@ pub fn print_colorized(tokens: Vec<Token>, highlight_kana: bool) {
 pub fn colorize_vec_to_str(
     tokenised_words: Vec<Token>,
     colorize_kana: bool,
-    colorize_all: bool,
+    all_color: bool,
 ) -> String {
     // number, type, closeness
     let mut palette = ColorPalette::new(tokenised_words.len() as u32, PaletteType::Pastel, true);
@@ -93,8 +93,7 @@ pub fn colorize_vec_to_str(
         let (token, color) = it;
 
         // Skip token if punctuation, numeral and such (pastel looks nice even when its everywhere!)
-        // try INVERTING the formatting! format only if those
-        if !colorize_all
+        if !all_color
             && colorize_kana
                 ^ (token.text.chars().all(charset::is_japanese_punctuation)
                     || token
@@ -122,18 +121,15 @@ pub fn colorize_vec_to_str(
 }
 
 /// Print word and its info (customise)
-pub fn print_word(word: &json::Word, colorize_kana: bool, colorize_all: bool) {
+pub fn print_word(word: &json::Word, colorize_kana: bool, all_color: bool) {
     // Tokenise and display glossary entry
-    tokenise_colorise(&word.gloss, colorize_kana, colorize_all);
+    tokenise_colorise(&word.gloss, colorize_kana, all_color);
 }
 
 /// Morphologically split Japanese text and colorise its parts
-pub fn tokenise_colorise(text: &str, colorize_kana: bool, colorize_all: bool) {
+pub fn tokenise_colorise(text: &str, colorize_kana: bool, all_color: bool) {
     // Tokenise and display glossary entry
     let mut tokenizer = tokeniser::LinderaTokenizer::new();
     let tokens = tokenizer.tokenize(text);
-    println!(
-        "{}",
-        colorize_vec_to_str(tokens, colorize_kana, colorize_all)
-    );
+    println!("{}", colorize_vec_to_str(tokens, colorize_kana, all_color));
 }

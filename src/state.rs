@@ -8,6 +8,8 @@ use std::path::Path;
 use chrono::naive::NaiveDateTime;
 use chrono::prelude::Utc;
 
+use crate::path;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
     // Today's kanji
@@ -28,17 +30,16 @@ impl Default for Config {
     }
 }
 
-// FIX: relative paths!
-const CONFIG_PATH: &str = "./data/config.json";
-
 /// Load config from JSON file, initializing it if required
 fn load_config() -> Result<Config, io::Error> {
     // Create default config if it does not exist
-    if !Path::new(CONFIG_PATH).exists() {
+    // if !Path::new(CONFIG_PATH).exists() {
+    if !Path::new(&path::get_config_path()).exists() {
         store(Config::default())?;
     }
 
-    let content = fs::read_to_string(CONFIG_PATH)?;
+    // let content = fs::read_to_string(CONFIG_PATH)?;
+    let content = fs::read_to_string(&path::get_config_path())?;
     let parsed: Config = serde_json::from_str(&content)?;
     Ok(parsed)
 }
@@ -68,5 +69,6 @@ pub fn should_roll_new_kanji() -> bool {
 /// Save config instance to file
 fn store(config: Config) -> io::Result<()> {
     let json_data = serde_json::to_string(&config).unwrap();
-    fs::write(CONFIG_PATH, json_data)
+    // fs::write(CONFIG_PATH, json_data)
+    fs::write(&path::get_config_path(), json_data)
 }

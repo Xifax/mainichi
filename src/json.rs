@@ -5,6 +5,8 @@ use std::fs;
 use std::io;
 use thiserror::Error;
 
+use crate::path;
+
 /// Kanji as represented in JSON resource
 #[derive(Deserialize, Clone, Debug)]
 pub struct Kanji {
@@ -23,10 +25,6 @@ pub struct Word {
     pub frequency: usize,
 }
 
-/// Path to resources
-const KANJI_PATH: &str = "data/kanji_ranked.json";
-const WORDS_PATH: &str = "data/related_words_by_kanji.json";
-
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("error reading the DB file: {0}")]
@@ -37,20 +35,23 @@ pub enum Error {
 
 /// Load graded [kanji] DB
 pub fn read_kanji_db() -> Result<Vec<Kanji>, Error> {
-    let db_content = fs::read_to_string(KANJI_PATH)?;
+    // let db_content = fs::read_to_string(KANJI_PATH)?;
+    let db_content = fs::read_to_string(&path::get_kanji_path())?;
     let parsed: Vec<Kanji> = serde_json::from_str(&db_content)?;
     Ok(parsed)
 }
 
 /// Load {kanji: [words]} DB
 pub fn read_words_db() -> Result<HashMap<String, Vec<Word>>, Error> {
-    let db_content = fs::read_to_string(WORDS_PATH)?;
+    // let db_content = fs::read_to_string(WORDS_PATH)?;
+    let db_content = fs::read_to_string(&path::get_words_path())?;
     let parsed: HashMap<String, Vec<Word>> = serde_json::from_str(&db_content)?;
     Ok(parsed)
 }
 
 /// Get random graded kanji with frequency options
 pub fn fetch_random_kanji_ranked() -> Kanji {
+    // TODO: introduce max_frequency?
     let kanji_list = read_kanji_db().unwrap();
     kanji_list.choose(&mut rand::thread_rng()).unwrap().clone()
 }
