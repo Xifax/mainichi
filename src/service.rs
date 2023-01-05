@@ -6,7 +6,7 @@ use rand::seq::SliceRandom;
 
 pub fn lookup_and_print_examples(query: &str, count: usize, randomize: bool, highlight_kana: bool) {
     // Fetch from Massif's API
-    let response = massif::fetch_examples(&query).unwrap();
+    let response = massif::fetch_examples(query).unwrap();
 
     // Fetch examples in random order (check max size)
     let examples = if randomize {

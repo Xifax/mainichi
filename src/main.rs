@@ -90,8 +90,8 @@ fn main() {
             }
 
             // Or lookup specific query | current kanji
-            let lookup = if query.is_some() {
-                query.unwrap()
+            let lookup = if let Some(value) = query {
+                value
             } else {
                 state::fetch_todays_kanji()
             };
@@ -100,7 +100,7 @@ fn main() {
         //////////////////////////////
         // Additional functionality //
         //////////////////////////////
-        cli::Action::Related {  } => {
+        cli::Action::Related {} => {
             let kanji = state::fetch_todays_kanji();
             let related_kanji = json::fetch_related_kanji(&kanji);
             match related_kanji {
@@ -109,7 +109,9 @@ fn main() {
             }
         }
         cli::Action::History {} => {
-            todo!()
+            for kanji in state::fetch_history() {
+                println!("{kanji}")
+            }
         }
         cli::Action::Lookup {} => {
             todo!()
@@ -117,12 +119,6 @@ fn main() {
         ////////////////////////////////////////
         // Quick test functionality goes here //
         ////////////////////////////////////////
-        cli::Action::Test => {
-            // pending::test_functionality();
-            // dbg!(state::should_roll_new_kanji());
-            // pending::test_spinnders();
-            // let test_path = path::get_relative_path(path::KANJI_PATH);
-            // dbg!(test_path);
-        }
+        cli::Action::Test => {}
     }
 }

@@ -42,21 +42,21 @@ pub enum Error {
 
 /// Load graded [kanji] DB
 pub fn read_kanji_db() -> Result<Vec<Kanji>, Error> {
-    let db_content = fs::read_to_string(&path::get_kanji_path())?;
+    let db_content = fs::read_to_string(path::get_kanji_path())?;
     let parsed: Vec<Kanji> = serde_json::from_str(&db_content)?;
     Ok(parsed)
 }
 
 /// Load {kanji: [words]} DB
 pub fn read_words_db() -> Result<HashMap<String, Vec<Word>>, Error> {
-    let db_content = fs::read_to_string(&path::get_words_path())?;
+    let db_content = fs::read_to_string(path::get_words_path())?;
     let parsed: HashMap<String, Vec<Word>> = serde_json::from_str(&db_content)?;
     Ok(parsed)
 }
 
 /// Load {kanji: [groups]} DB
 pub fn read_groups_db() -> Result<HashMap<String, KanjiGroup>, Error> {
-    let db_content = fs::read_to_string(&path::get_kanji_groups_path())?;
+    let db_content = fs::read_to_string(path::get_kanji_groups_path())?;
     let parsed: HashMap<String, KanjiGroup> = serde_json::from_str(&db_content)?;
     Ok(parsed)
 }

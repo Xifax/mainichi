@@ -1,9 +1,8 @@
 use colourado::{ColorPalette, PaletteType};
-use japanese::charset;
+use japanese::{charset, converter};
 use lindera::Token;
 use random_color::RandomColor;
 use termion::color;
-use wana_kana::to_hiragana::*;
 
 use crate::json;
 use crate::tokeniser;
@@ -57,7 +56,7 @@ pub fn print_colorized(tokens: Vec<Token>, highlight_kana: bool) {
 
             // Convert to hiragana only if not katakana
             let transcription = if part != details[7] {
-                to_hiragana(&details[7].clone())
+                converter::convert_katakana_to_hiragana_string(&details[7].clone())
             } else {
                 details[7].clone()
             };

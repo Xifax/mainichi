@@ -14,8 +14,8 @@ const WORDS_PATH: &str = "data/related_words_by_kanji.json";
 fn get_relative_path(path: &str) -> String {
     let home: PathBuf = home_dir().unwrap();
     let relative_path = RelativePath::new(DATA_PATH);
-    let path = relative_path.join(path).to_path(&home);
-    path.into_os_string().into_string().unwrap().clone()
+    let path = relative_path.join(path).to_path(home);
+    path.into_os_string().into_string().unwrap()
 }
 
 pub fn get_config_path() -> String {
