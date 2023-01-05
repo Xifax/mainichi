@@ -10,14 +10,19 @@ pub struct Args {
 pub enum Action {
     /// Display kanji for today
     Roll {
-        // TODO: !!!
-        // // WIP: possible options
-        // max_rarity: usize,
         // // Don't roll new kanji that is much rarer that previous one (sic!)
         // sort_by_rarity: bool,
         /// Force to fetch new kanji even if there's already one for today
         #[clap(short, long, default_value_t = false)]
         force: bool,
+
+        /// Max frequency allowed
+        #[clap(short, long)]
+        max_frequency: Option<usize>,
+
+        /// Display kanji as ascii
+        #[clap(short, long, default_value_t = false)]
+        ascii_art: bool,
     },
     // Definition and so on
     Gloss {

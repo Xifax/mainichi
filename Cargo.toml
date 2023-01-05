@@ -23,6 +23,10 @@ japanese = "0.1.1"
 chrono = { version = "0.4.23", features = ["serde"] }
 relative-path = "1.7.3"
 home = "0.5.4"
+text-to-png = "0.2.0"
+tiny-skia = "0.8.2"
+artem = "1.1.5"
+image = "0.24.2"
 
 [dev-dependencies]
 bacon = "2.2.8"

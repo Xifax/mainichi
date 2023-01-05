@@ -3,6 +3,7 @@ use clap::Parser;
 #[allow(unused)]
 use colored::Colorize;
 
+mod ascii;
 mod cli;
 mod json;
 mod massif;
@@ -22,7 +23,7 @@ fn main() {
         //////////////////////////////////////////
         // Get new kanji or show already rolled //
         //////////////////////////////////////////
-        cli::Action::Roll { force } => {
+        cli::Action::Roll { force, max_frequency, ascii_art } => {
             // Check for `forced` flags and so on
             let kanji: json::Kanji;
             if force || state::should_roll_new_kanji() {
@@ -36,8 +37,13 @@ fn main() {
                 let kanji_symbol = state::fetch_todays_kanji();
                 kanji = json::fetch_kanji(&kanji_symbol);
             }
-            // TODO: format prettily
-            println!("{:#?}", kanji.kanji);
+
+            // Format prettily
+            if ascii_art {
+                ascii::text_to_ascii(&kanji.kanji);
+            } else {
+                println!("{}", kanji.kanji);
+            }
         }
         // Display glossary definitions
         cli::Action::Gloss {

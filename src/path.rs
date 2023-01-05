@@ -10,6 +10,7 @@ const CONFIG_PATH: &str = "data/config.json";
 pub const KANJI_PATH: &str = "data/kanji_ranked.json";
 const KANJI_GROUPS_PATH: &str = "data/kanji_groups.json";
 const WORDS_PATH: &str = "data/related_words_by_kanji.json";
+const FONT_PATH: &str = "data/fonts/NotoSansMonoCJK.otf";
 
 fn get_relative_path(path: &str) -> String {
     let home: PathBuf = home_dir().unwrap();
@@ -32,4 +33,8 @@ pub fn get_kanji_groups_path() -> String {
 
 pub fn get_words_path() -> String {
     get_relative_path(WORDS_PATH)
+}
+
+pub fn get_font_path() -> String {
+    get_relative_path(FONT_PATH)
 }
