@@ -1,20 +1,18 @@
 use text_to_png::TextRenderer;
 
-use std::{
-    fs::{File, read},
-    io::{BufWriter, Write},
-};
 use artem::convert;
 use artem::options::OptionBuilder;
-use image;
+use std::{
+    fs::{read, remove_file, File},
+    io::{BufWriter, Write},
+};
 
 use crate::path;
 
 pub fn text_to_ascii(text: &str) {
     let font = read(path::get_font_path()).unwrap();
-    let renderer =
-        TextRenderer::try_new_with_ttf_font_data(font)
-            .expect("Example font is definitely loadable");
+    let renderer = TextRenderer::try_new_with_ttf_font_data(font)
+        .expect("Example font is definitely loadable");
 
     // TODO: randomize color
     let result = renderer.render_text_to_png_data(text, 36, "Dark Turquoise");
@@ -29,10 +27,10 @@ pub fn text_to_ascii(text: &str) {
         writer.write_all(&png_data.data).unwrap();
     }
 
-    let image = image::open(&output_path).unwrap();
+    let image = image::open(output_path).unwrap();
     let ascii = convert(image, OptionBuilder::new().build());
 
-    // TODO: remove text.png
+    remove_file(output_path).unwrap();
 
-    println!("{}", ascii);
+    println!("{ascii}");
 }

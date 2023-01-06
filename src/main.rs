@@ -23,7 +23,11 @@ fn main() {
         //////////////////////////////////////////
         // Get new kanji or show already rolled //
         //////////////////////////////////////////
-        cli::Action::Roll { force, max_frequency, ascii_art } => {
+        cli::Action::Roll {
+            force,
+            max_frequency: _,
+            ascii_art,
+        } => {
             // Check for `forced` flags and so on
             let kanji: json::Kanji;
             if force || state::should_roll_new_kanji() {

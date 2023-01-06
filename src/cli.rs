@@ -24,7 +24,7 @@ pub enum Action {
         #[clap(short, long, default_value_t = false)]
         ascii_art: bool,
     },
-    // Definition and so on
+    /// Display definition and thesaurus entry
     Gloss {
         /// Display kana as colored, leave kanji white
         #[clap(short, long, default_value_t = false)]
@@ -34,7 +34,7 @@ pub enum Action {
         #[clap(short, long, default_value_t = false)]
         all_color: bool,
     },
-    // Related words
+    /// Display related words
     Words {
         /// Display kana as colored, leave kanji white
         #[clap(short, long, default_value_t = false)]
@@ -44,7 +44,7 @@ pub enum Action {
         #[clap(short, long, default_value_t = false)]
         all_color: bool,
     },
-    /// Display example for today's kanji
+    /// Fetch examples for today's kanji
     Examples {
         /// Number of examples to fetch
         #[clap(short, long, default_value_t = 5)]
@@ -66,18 +66,15 @@ pub enum Action {
         #[clap(short, long)]
         query: Option<String>,
     },
-    /// Show kanji history
+    /// Show all kanji rolled up until today
     History {},
-    /// Similar kanji and words
+    /// Similar kanji and words, from Odyssey and other sources
     Related {},
+    /// Lookup specific items in different context (separate from examples, words)
     Lookup {
-        // Item to lookup
-        // #[clap(short, long)]
-        // query: String,
-
         // Lookup kanji|words|examples for provided query in local resources
         // TODO: show gloss|exampes for specific kanji|words
     },
-    /// Test functionality
+    /// Test functionality and random POCs
     Test,
 }
