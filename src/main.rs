@@ -17,7 +17,6 @@ mod pending;
 
 #[tokio::main]
 async fn main() {
-    // let config = state::config();
     let args = cli::Args::parse();
 
     match args.action {
@@ -31,8 +30,8 @@ async fn main() {
         } => {
             // Check for `forced` flags and so on
             let kanji: json::Kanji;
+            // Get new kanji
             if force || state::should_roll_new_kanji() {
-
                 kanji = if let Some(frequency) = max_frequency {
                     json::fetch_random_kanji_ranked_by_frequency(frequency)
                 } else {
@@ -42,10 +41,11 @@ async fn main() {
                 // kanji = json::fetch_random_kanji_ranked();
 
                 // TODO: check if this kanji is not in history
-                // TODO: (optional) check max_frequency
                 // TODO: save max frequency when it's specified!
                 // TODO: (optional) check frequency diff with last rolled kanji
+
                 state::set_todays_kanji(&kanji.kanji).unwrap();
+            // Get already saved kanji
             } else {
                 let kanji_symbol = state::fetch_todays_kanji();
                 kanji = json::fetch_kanji(&kanji_symbol);
@@ -103,7 +103,8 @@ async fn main() {
                         count,
                         randomize,
                         highlight_kana,
-                    ).await;
+                    )
+                    .await;
                 }
                 return;
             }
@@ -139,6 +140,6 @@ async fn main() {
         ////////////////////////////////////////
         // Quick test functionality goes here //
         ////////////////////////////////////////
-        cli::Action::Test => {}
+        cli::Action::Test {} => {}
     }
 }

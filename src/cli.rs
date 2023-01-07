@@ -10,8 +10,7 @@ pub struct Args {
 pub enum Action {
     /// Display kanji for today
     Roll {
-        // // Don't roll new kanji that is much rarer that previous one (sic!)
-        // sort_by_rarity: bool,
+        // IDEA: Don't roll new kanji that is much rarer that previous one (sic!)
         /// Force to fetch new kanji even if there's already one for today
         #[clap(short, long, default_value_t = false)]
         force: bool,
@@ -72,9 +71,9 @@ pub enum Action {
     Related {},
     /// Lookup specific items in different context (separate from examples, words)
     Lookup {
-        // Lookup kanji|words|examples for provided query in local resources
-        // TODO: show gloss|exampes for specific kanji|words
+        // IDEA: Lookup kanji|words|examples for provided query in local resources
+        // IDEA: show gloss|exampes for specific kanji|words
     },
     /// Test functionality and random POCs
-    Test,
+    Test {},
 }

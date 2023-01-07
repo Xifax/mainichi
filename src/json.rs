@@ -75,7 +75,8 @@ pub fn fetch_random_kanji_ranked_by_frequency(max_frequency: usize) -> Kanji {
         .filter(|k| k.frequency <= max_frequency)
         .collect::<Vec<&Kanji>>()
         .choose(&mut rand::thread_rng())
-        .unwrap()).clone()
+        .unwrap())
+    .clone()
 }
 
 /// Get kanji by key
