@@ -1809,6 +1809,7 @@ dependencies = [
  "text-to-png",
  "thiserror",
  "tiny-skia 0.8.2",
+ "tokio",
 ]
 
 [[package]]
@@ -3306,6 +3307,7 @@ dependencies = [
  "memchr",
  "mio",
  "num_cpus",
+ "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",

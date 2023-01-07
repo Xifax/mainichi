@@ -71,7 +71,7 @@ pub fn print_colorized(tokens: Vec<Token>, highlight_kana: bool) {
 
     println!("{}", &sentence);
     println!("{}", &reading);
-    println!("\n");
+    println!("");
 }
 
 /// Transform vector of tokens to palleted colors rainbow madness

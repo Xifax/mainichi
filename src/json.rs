@@ -61,11 +61,21 @@ pub fn read_groups_db() -> Result<HashMap<String, KanjiGroup>, Error> {
     Ok(parsed)
 }
 
-/// Get random graded kanji with frequency options
+/// Get random graded kanji
 pub fn fetch_random_kanji_ranked() -> Kanji {
-    // TODO: introduce max_frequency?
     let kanji_list = read_kanji_db().unwrap();
     kanji_list.choose(&mut rand::thread_rng()).unwrap().clone()
+}
+
+/// Get random graded kanji limited by frequency
+pub fn fetch_random_kanji_ranked_by_frequency(max_frequency: usize) -> Kanji {
+    let kanji_list = read_kanji_db().unwrap();
+    (*kanji_list
+        .iter()
+        .filter(|k| k.frequency <= max_frequency)
+        .collect::<Vec<&Kanji>>()
+        .choose(&mut rand::thread_rng())
+        .unwrap()).clone()
 }
 
 /// Get kanji by key

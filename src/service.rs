@@ -3,10 +3,23 @@ use crate::massif;
 use crate::terminal;
 use crate::tokeniser;
 use rand::seq::SliceRandom;
+use spinners::{Spinner, Spinners};
 
-pub fn lookup_and_print_examples(query: &str, count: usize, randomize: bool, highlight_kana: bool) {
+pub async fn lookup_and_print_examples(
+    query: &str,
+    count: usize,
+    randomize: bool,
+    highlight_kana: bool,
+) {
+    // Indeterminate progressbar
+    let mut sp = Spinner::new(Spinners::Shark, format!("Fetching {query} from Massif..."));
+
     // Fetch from Massif's API
-    let response = massif::fetch_examples(query).unwrap();
+    let response = massif::fetch_examples(query).await.unwrap();
+
+    // Stop progressbar and print newline
+    sp.stop();
+    println!("\n");
 
     // Fetch examples in random order (check max size)
     let examples = if randomize {
