@@ -124,10 +124,15 @@ pub fn colorize_vec_to_str(
     resulting_string
 }
 
-/// Print word and its info (customise)
-pub fn print_word(word: &json::Word, colorize_kana: bool, all_color: bool) {
-    // Tokenise and display glossary entry
-    tokenise_colorise(&word.gloss, colorize_kana, all_color);
+/// Print word and its info (customise what is displayed)
+pub fn print_word(word: &json::Word, colorize_kana: bool, all_color: bool, skip_gloss: bool) {
+    if skip_gloss {
+        // Tokenise and display word 
+        tokenise_colorise(&word.word, colorize_kana, all_color);
+    } else{
+        // Tokenise and display glossary entry
+        tokenise_colorise(&word.gloss, colorize_kana, all_color);
+    }
 }
 
 /// Morphologically split Japanese text and colorise its parts

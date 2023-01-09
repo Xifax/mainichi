@@ -77,6 +77,7 @@ async fn main() {
         cli::Action::Words {
             colorize_kana,
             all_color,
+            skip_gloss,
         } => {
             let kanji = state::fetch_todays_kanji();
             let words = json::fetch_related_words(&kanji);
@@ -87,7 +88,7 @@ async fn main() {
             }
 
             for word in words.iter() {
-                terminal::print_word(word, colorize_kana, all_color);
+                terminal::print_word(word, colorize_kana, all_color, skip_gloss);
             }
         }
         //////////////////////////////////////

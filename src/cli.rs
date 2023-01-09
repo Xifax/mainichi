@@ -46,6 +46,10 @@ pub enum Action {
         /// Colorize everything
         #[clap(short, long, default_value_t = false)]
         all_color: bool,
+
+        /// Hide definitions
+        #[clap(short, long, default_value_t = false)]
+        skip_gloss: bool,
     },
     /// Fetch examples for today's kanji
     Examples {
