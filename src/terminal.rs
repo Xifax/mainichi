@@ -1,8 +1,14 @@
+use std::io::{stdin, stdout, Write};
+use std::process::exit;
+
 use colourado::{ColorPalette, PaletteType};
 use japanese::{charset, converter};
 use lindera::Token;
 use random_color::RandomColor;
 use termion::color;
+use termion::event::Key;
+use termion::input::TermRead;
+use termion::raw::IntoRawMode;
 
 use crate::json;
 use crate::tokeniser;
@@ -127,9 +133,9 @@ pub fn colorize_vec_to_str(
 /// Print word and its info (customise what is displayed)
 pub fn print_word(word: &json::Word, colorize_kana: bool, all_color: bool, skip_gloss: bool) {
     if skip_gloss {
-        // Tokenise and display word 
+        // Tokenise and display word
         tokenise_colorise(&word.word, colorize_kana, all_color);
-    } else{
+    } else {
         // Tokenise and display glossary entry
         tokenise_colorise(&word.gloss, colorize_kana, all_color);
     }
@@ -141,4 +147,21 @@ pub fn tokenise_colorise(text: &str, colorize_kana: bool, all_color: bool) {
     let mut tokenizer = tokeniser::LinderaTokenizer::new();
     let tokens = tokenizer.tokenize(text);
     println!("{}", colorize_vec_to_str(tokens, colorize_kana, all_color));
+}
+
+/// Pause until user presses something
+pub fn pause() {
+    let mut stdout = stdout().into_raw_mode().unwrap();
+    write!(stdout, "Press any key to continue ~.~\r\n").unwrap();
+    stdout.flush().unwrap();
+    let mut it = stdin().keys();
+    loop {
+        let b = it.next();
+        if let Some(Ok(k)) = b {
+            match k {
+                Key::Ctrl('c') => exit(0),
+                _ => break,
+            }
+        }
+    }
 }

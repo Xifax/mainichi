@@ -105,7 +105,9 @@ async fn main() {
             if words_related {
                 let kanji = state::fetch_todays_kanji();
                 let words = json::fetch_related_words(&kanji);
-                for word in words.iter() {
+                let mut iter = words.iter().take(count).peekable();
+                // for word in iter.take(count) {
+                while let Some(word) = iter.next() {
                     service::lookup_and_print_examples(
                         &word.word,
                         count,
@@ -113,6 +115,10 @@ async fn main() {
                         highlight_kana,
                     )
                     .await;
+
+                    if iter.peek().is_some() {
+                        terminal::pause();
+                    }
                 }
                 return;
             }
