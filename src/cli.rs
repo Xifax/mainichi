@@ -22,6 +22,10 @@ pub enum Action {
         /// Display kanji as ascii
         #[clap(short, long, default_value_t = false)]
         ascii_art: bool,
+
+        /// Set this kanji as today's
+        #[clap(short, long)]
+        set_kanji: Option<String>,
     },
     /// Display definition and thesaurus entry
     Gloss {

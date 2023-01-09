@@ -27,11 +27,18 @@ async fn main() {
             force,
             max_frequency,
             ascii_art,
+            set_kanji,
         } => {
             // Check for `forced` flags and so on
             let kanji: json::Kanji;
+            // Kanji specified
+            if set_kanji.is_some() {
+                let kanji_symbol = set_kanji.unwrap();
+                kanji = json::fetch_kanji(&kanji_symbol);
+                state::set_todays_kanji(&kanji_symbol).unwrap();
+            }
             // Get new kanji
-            if force || state::should_roll_new_kanji() {
+            else if force || state::should_roll_new_kanji() {
                 kanji = if let Some(frequency) = max_frequency {
                     json::fetch_random_kanji_ranked_by_frequency(frequency)
                 } else {
