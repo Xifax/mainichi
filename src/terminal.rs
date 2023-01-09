@@ -66,6 +66,11 @@ pub fn print_colorized(tokens: Vec<Token>, highlight_kana: bool) {
                 colorize(&part, &transcription, highlight_kana);
             sentence.push_str(&colored_part);
             reading.push_str(&colored_transcription);
+        } else {
+            let (colored_part, colored_transcription) =
+                colorize(&token.text, &token.text, highlight_kana);
+            sentence.push_str(&colored_part);
+            reading.push_str(&colored_transcription);
         }
     }
 
