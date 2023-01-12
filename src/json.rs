@@ -1,9 +1,12 @@
-use rand::seq::SliceRandom;
+use rand::seq::{IteratorRandom, SliceRandom};
 use serde::Deserialize;
+use slicer::AsSlicer;
 use std::collections::HashMap;
 use std::fs;
 use std::io;
 use thiserror::Error;
+
+use colored::Colorize;
 
 use crate::path;
 
@@ -61,6 +64,12 @@ pub fn read_groups_db() -> Result<HashMap<String, KanjiGroup>, Error> {
     Ok(parsed)
 }
 
+/// Load {kanji: [chars]} DB
+pub fn read_kanji_ordered_db() -> Result<String, Error> {
+    let db_content = fs::read_to_string(path::get_kanji_ordedered_path())?;
+    Ok(db_content)
+}
+
 /// Get random graded kanji
 pub fn fetch_random_kanji_ranked() -> Kanji {
     let kanji_list = read_kanji_db().unwrap();
@@ -77,6 +86,17 @@ pub fn fetch_random_kanji_ranked_by_frequency(max_frequency: usize) -> Kanji {
         .choose(&mut rand::thread_rng())
         .unwrap())
     .clone()
+}
+
+/// Get random kanji by simple positional index (higher -> rarer in Wiki)
+pub fn fetch_random_kanji_ranked_by_position(max_frequency: usize) -> Kanji {
+    let kanji_ordered = read_kanji_ordered_db().unwrap();
+    let binding = kanji_ordered.chars().collect::<Vec<_>>();
+    let kanji_char = binding
+        .iter()
+        .take(max_frequency)
+        .choose(&mut rand::thread_rng());
+    fetch_kanji(&kanji_char.unwrap().to_string())
 }
 
 /// Get kanji by key
@@ -99,4 +119,39 @@ pub fn fetch_related_words(kanji: &str) -> Vec<Word> {
 pub fn fetch_related_kanji(kanji: &str) -> Option<KanjiGroup> {
     let groups = read_groups_db().unwrap();
     groups.get(kanji).cloned()
+}
+
+/// Search everything
+pub fn search_universal(query: &str) -> Vec<String> {
+    let kanji_list = read_kanji_db().unwrap();
+    let found_gloss = kanji_list
+        .iter()
+        .filter(|k| k.gloss.contains(query))
+        .map(|k| k.gloss.clone());
+
+    let mut results: Vec<String> = vec![];
+
+    for s in found_gloss.into_iter() {
+        // Slice string until after the word
+        let mut slicer = s.as_str().as_slicer();
+        let before = slicer.slice_until(query).unwrap();
+        slicer.skip_over(query);
+        let after = slicer.slice_non_whitespace().unwrap();
+
+        // Cut by newlines and get penultimate result -> our sentence with the word
+        let mut pre = before.split_whitespace();
+
+        // Try to get text preceding the query, until before the first newline
+        let sentence = if let Some(value) = pre.nth_back(1) {
+            value
+        } else {
+            ""
+        };
+
+        // Combine it together and highlight found query
+        let slice = format!("{}{}{}", sentence, query.red(), after);
+
+        results.push(slice);
+    }
+    results
 }

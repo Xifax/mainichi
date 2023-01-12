@@ -1783,7 +1783,7 @@ dependencies = [
 
 [[package]]
 name = "mainichi"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "artem",
  "bacon",
@@ -1804,6 +1804,7 @@ dependencies = [
  "rustfmt",
  "serde",
  "serde_json",
+ "slicer",
  "spinners",
  "termion",
  "text-to-png",
@@ -2925,6 +2926,12 @@ checksum = "4614a76b2a8be0058caa9dbbaf66d988527d86d003c11a94fbd335d7661edcef"
 dependencies = [
  "autocfg 1.1.0",
 ]
+
+[[package]]
+name = "slicer"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "99f74f6f01531fc969bd8e7a4522a933c8d8c6f5b86570779e3baa28c47a0009"
 
 [[package]]
 name = "smallvec"

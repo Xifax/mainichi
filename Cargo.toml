@@ -1,6 +1,6 @@
 [package]
 name = "mainichi"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -27,6 +27,7 @@ text-to-png = "0.2.0"
 tiny-skia = "0.8.2"
 artem = "1.1.5"
 image = "0.24.2"
+slicer = "0.1.1"
 
 [dev-dependencies]
 bacon = "2.2.8"

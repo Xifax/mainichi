@@ -53,6 +53,8 @@ pub fn print_colorized(tokens: Vec<Token>, highlight_kana: bool) {
 
     for token in tokens {
         let details = &token.details.unwrap();
+        // dbg!(&token.text);
+        // dbg!(&details);
 
         if details.len() > 7 {
             // Positions in token array correspond to different details

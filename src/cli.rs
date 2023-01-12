@@ -15,9 +15,13 @@ pub enum Action {
         #[clap(short, long, default_value_t = false)]
         force: bool,
 
-        /// Max frequency allowed
+        /// Max frequency allowed (taken either from field, or from ordered kanji list)
         #[clap(short, long)]
         max_frequency: Option<usize>,
+
+        /// Order kanji by incremental list when filtering by frequency
+        #[clap(short, long, default_value_t = false)]
+        order_simple: bool,
 
         /// Display kanji as ascii
         #[clap(short, long, default_value_t = false)]
@@ -79,6 +83,9 @@ pub enum Action {
     Related {},
     /// Lookup specific items in different context (separate from examples, words)
     Lookup {
+        /// Item to lookup across all available data
+        #[clap(short, long)]
+        query: String,
         // IDEA: Lookup kanji|words|examples for provided query in local resources
         // IDEA: show gloss|exampes for specific kanji|words
     },

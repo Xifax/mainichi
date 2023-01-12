@@ -26,6 +26,7 @@ async fn main() {
         cli::Action::Roll {
             force,
             max_frequency,
+            order_simple,
             ascii_art,
             set_kanji,
         } => {
@@ -40,16 +41,23 @@ async fn main() {
             // Get new kanji
             else if force || state::should_roll_new_kanji() {
                 kanji = if let Some(frequency) = max_frequency {
-                    json::fetch_random_kanji_ranked_by_frequency(frequency)
+                    // Limit by position (first N kanji by frequency)
+                    if order_simple {
+                        json::fetch_random_kanji_ranked_by_position(frequency)
+                    // Limit by field (filter, frequency property <= N)
+                    } else {
+                        json::fetch_random_kanji_ranked_by_frequency(frequency)
+                    }
                 } else {
                     json::fetch_random_kanji_ranked()
                 };
 
-                // kanji = json::fetch_random_kanji_ranked();
-
-                // TODO: check if this kanji is not in history
-                // TODO: save max frequency when it's specified!
-                // TODO: (optional) check frequency diff with last rolled kanji
+                /*
+                [Pending: advanced features]
+                TODO: check if this kanji is not in history
+                TODO: save max frequency when it's specified!
+                TODO: (optional) check frequency diff with last rolled kanji
+                */
 
                 state::set_todays_kanji(&kanji.kanji).unwrap();
             // Get already saved kanji
@@ -148,8 +156,20 @@ async fn main() {
                 println!("{kanji}")
             }
         }
-        cli::Action::Lookup {} => {
-            todo!()
+        cli::Action::Lookup { query } => {
+            let results = json::search_universal(&query);
+            for (r, is_last_element) in results
+                .iter()
+                .enumerate()
+                // w will be true if it is last
+                .map(|(i, w)| (w, i == results.len() - 1))
+            {
+                println!("{r}");
+                // Separate by gray
+                if !is_last_element {
+                    println!("{}", format!("{}-", "-*".repeat(30)).truecolor(90, 90, 90));
+                }
+            }
         }
         ////////////////////////////////////////
         // Quick test functionality goes here //
