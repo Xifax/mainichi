@@ -40,18 +40,6 @@ async fn main() {
             }
             // Get new kanji
             else if force || state::should_roll_new_kanji() {
-                // kanji = if let Some(frequency) = max_frequency {
-                //     // Limit by position (first N kanji by frequency)
-                //     if order_simple {
-                //         json::fetch_random_kanji_ranked_by_position(frequency)
-                //     // Limit by field (filter, frequency property <= N)
-                //     } else {
-                //         json::fetch_random_kanji_ranked_by_frequency(frequency)
-                //     }
-                // } else {
-                //     json::fetch_random_kanji_ranked()
-                // };
-
                 kanji = service::try_fetch_new_kanji(order_simple, max_frequency, 5);
 
                 /*

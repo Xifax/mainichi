@@ -18,3 +18,5 @@ To deploy this project run
   cargo install --path .
 ```
 
+NB: strange bug in Tokenizer when trying to install to path.
+`cargo build --release` still works fine.

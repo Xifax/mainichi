@@ -132,12 +132,10 @@ pub fn search_universal(query: &str, full_text: bool) -> Vec<String> {
     let mut results: Vec<String> = vec![];
 
     for s in found_gloss.into_iter() {
-
         // Slice string until after the word
         let mut slicer = s.as_str().as_slicer();
         let before = slicer.slice_until(query).unwrap();
         slicer.skip_over(query);
-
 
         let after;
         let sentence;
