@@ -58,7 +58,7 @@ pub enum Action {
     /// Fetch examples for today's kanji
     Examples {
         /// Number of examples to fetch
-        #[clap(short, long, default_value_t = 5)]
+        #[clap(short, long, default_value_t = 3)]
         count: usize,
 
         /// Highlight ALL hiragana
@@ -86,6 +86,10 @@ pub enum Action {
         /// Item to lookup across all available data
         #[clap(short, long)]
         query: String,
+
+        /// Show full text for item found
+        #[clap(short, long, default_value_t = false)]
+        full: bool,
         // IDEA: Lookup kanji|words|examples for provided query in local resources
         // IDEA: show gloss|exampes for specific kanji|words
     },

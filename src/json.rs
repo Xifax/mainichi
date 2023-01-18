@@ -11,7 +11,7 @@ use colored::Colorize;
 use crate::path;
 
 /// Kanji as represented in JSON resource
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Clone, Debug, Default)]
 pub struct Kanji {
     pub kanji: String,
     pub reading: String,
@@ -122,7 +122,7 @@ pub fn fetch_related_kanji(kanji: &str) -> Option<KanjiGroup> {
 }
 
 /// Search everything
-pub fn search_universal(query: &str) -> Vec<String> {
+pub fn search_universal(query: &str, full_text: bool) -> Vec<String> {
     let kanji_list = read_kanji_db().unwrap();
     let found_gloss = kanji_list
         .iter()
@@ -132,21 +132,35 @@ pub fn search_universal(query: &str) -> Vec<String> {
     let mut results: Vec<String> = vec![];
 
     for s in found_gloss.into_iter() {
+
         // Slice string until after the word
         let mut slicer = s.as_str().as_slicer();
         let before = slicer.slice_until(query).unwrap();
         slicer.skip_over(query);
-        let after = slicer.slice_non_whitespace().unwrap();
 
-        // Cut by newlines and get penultimate result -> our sentence with the word
-        let mut pre = before.split_whitespace();
 
-        // Try to get text preceding the query, until before the first newline
-        let sentence = if let Some(value) = pre.nth_back(1) {
-            value
+        let after;
+        let sentence;
+
+        // Either get part of text (sentence|paragraph)
+        if !full_text {
+            after = slicer.slice_non_whitespace().unwrap();
+
+            // Cut by newlines and get penultimate result -> our sentence with the word
+            let mut pre = before.split_whitespace();
+
+            // Try to get text preceding the query, until before the first newline
+            sentence = if let Some(value) = pre.nth_back(1) {
+                value
+            } else {
+                ""
+            };
+
+        // Or full entry
         } else {
-            ""
-        };
+            after = slicer.slice_to_end().unwrap();
+            sentence = before;
+        }
 
         // Combine it together and highlight found query
         let slice = format!("{}{}{}", sentence, query.red(), after);

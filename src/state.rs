@@ -69,6 +69,11 @@ pub fn fetch_history() -> Vec<String> {
     cfg.history
 }
 
+/// Check if this kanji was already shown
+pub fn already_in_history(kanji: &str) -> bool {
+    fetch_history().contains(&kanji.into())
+}
+
 /// Save config instance to file
 fn store(config: Config) -> io::Result<()> {
     let json_data = serde_json::to_string(&config).unwrap();
