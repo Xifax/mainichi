@@ -93,6 +93,12 @@ pub enum Action {
         // IDEA: Lookup kanji|words|examples for provided query in local resources
         // IDEA: show gloss|exampes for specific kanji|words
     },
+    /// Launch interactive session with random kanji and related info
+    Play {
+        /// Max frequency allowed (taken either from field, or from ordered kanji list)
+        #[clap(short, long)]
+        max_frequency: Option<usize>,
+    },
     /// Test functionality and random POCs
     Test {},
 }

@@ -104,7 +104,6 @@ async fn main() {
                 let kanji = state::fetch_todays_kanji();
                 let words = json::fetch_related_words(&kanji);
                 let mut iter = words.iter().take(count).peekable();
-                // for word in iter.take(count) {
                 while let Some(word) = iter.next() {
                     service::lookup_and_print_examples(
                         &word.word,
@@ -159,6 +158,54 @@ async fn main() {
                 if !is_last_element {
                     println!("{}", format!("{}-", "-*".repeat(30)).truecolor(90, 90, 90));
                 }
+            }
+        }
+        cli::Action::Play { max_frequency } => {
+
+            let frequency = if let Some(value) = max_frequency {
+                value
+            } else {
+                2000
+            };
+            
+            loop {
+                let kanji = json::fetch_random_kanji_ranked_by_position(frequency);
+                // 1. Display kanji ASCII
+                ascii::text_to_ascii(&kanji.kanji);
+                terminal::pause();
+                // 2. Display kanji itself
+                terminal::print_in_random_color(&kanji.kanji);
+                terminal::pause();
+                // 3. Show words
+                let words = json::fetch_related_words(&kanji.kanji);
+                // TODO: take N random
+                for word in words.iter().take(4) {
+                    // Highlight all, words only
+                    terminal::print_word(word, false, true, true);
+                }
+                terminal::pause();
+                // 4. Show info for words
+                for word in words.iter().take(4) {
+                    // Highlight all, words + gloss only
+                    terminal::print_word(word, false, true, false);
+                    terminal::pause();
+                }
+                // 5.1 Voice the examples using Naver API
+                // todo!();
+                // 5.2 Show examples
+                service::lookup_and_print_examples(
+                    &kanji.kanji,
+                    2,
+                    true,
+                    false,
+                )
+                .await;
+                terminal::pause();
+                // 5.3 Show kanji gloss
+                terminal::tokenise_colorise(&kanji.gloss, true, true);
+                terminal::pause();
+                // 6. IDEA: get kanji|words from the example
+                // 6.X go to 1
             }
         }
         ////////////////////////////////////////

@@ -167,3 +167,15 @@ pub fn pause() {
         }
     }
 }
+
+/// Print string in random color, add newline
+pub fn print_in_random_color(string: &str) {
+    let random_color = RandomColor::new().to_rgb_array();
+    let console_color = color::Fg(color::Rgb(
+        random_color[0],
+        random_color[1],
+        random_color[2],
+    ));
+
+    println!("{console_color}{string}");
+}
